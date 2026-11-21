@@ -1,0 +1,36 @@
+# Blueprint de Render: New > Blueprint > este repositorio.
+services:
+  - type: web
+    name: acadesys-facturacion
+    runtime: docker
+    plan: free
+    healthCheckPath: /api/system/info
+    envVars:
+      - key: APP_KEY
+        generateValue: true
+      - key: APP_URL
+        sync: false
+      - key: DB_CONNECTION
+        value: mysql
+      - key: DB_HOST
+        sync: false
+      - key: DB_PORT
+        sync: false
+      - key: DB_DATABASE
+        value: facturacion
+      - key: DB_USERNAME
+        sync: false
+      - key: DB_PASSWORD
+        sync: false
+      - key: DB_CA_CERT
+        sync: false
+      - key: SESSION_DRIVER
+        value: database
+      - key: CACHE_STORE
+        value: database
+      - key: QUEUE_CONNECTION
+        value: sync
+      - key: FACT_ADMIN_EMAIL
+        value: facturacion@acadesys.pe
+      - key: FACT_ADMIN_PASSWORD
+        generateValue: true

@@ -23,11 +23,15 @@ use App\Http\Controllers\Api\UbigeoController;
 Route::get('/system/info', [AuthController::class, 'systemInfo']);
 
 // Setup del sistema
-Route::prefix('setup')->group(function () {
-    Route::post('/migrate', [SetupController::class, 'migrate']);
-    Route::post('/seed', [SetupController::class, 'seed']);
-    Route::get('/status', [SetupController::class, 'status']);
-});
+// En producción la base se prepara al arrancar (php artisan acadesys:preparar);
+// migrar o sembrar por HTTP sin autenticación no se expone.
+if (!app()->isProduction()) {
+    Route::prefix('setup')->group(function () {
+        Route::post('/migrate', [SetupController::class, 'migrate']);
+        Route::post('/seed', [SetupController::class, 'seed']);
+        Route::get('/status', [SetupController::class, 'status']);
+    });
+}
 
 // Inicialización del sistema
 Route::post('/auth/initialize', [AuthController::class, 'initialize']);

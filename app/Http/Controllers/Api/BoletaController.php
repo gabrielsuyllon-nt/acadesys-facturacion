@@ -125,20 +125,17 @@ class BoletaController extends Controller
     /**
      * Descargar XML de boleta
      */
-    public function downloadXml(string $id): Response
+    public function downloadXml(string $id)
     {
         try {
             $boleta = Boleta::findOrFail($id);
-            
-            if (!$this->fileService->fileExists($boleta->xml_path)) {
+            $download = $this->fileService->downloadXml($boleta);
+
+            if (!$download) {
                 return $this->notFoundResponse('XML no encontrado');
             }
 
-            return $this->fileService->downloadFile(
-                $boleta->xml_path,
-                $boleta->numero_completo . '.xml',
-                ['Content-Type' => 'application/xml']
-            );
+            return $download;
 
         } catch (Exception $e) {
             return $this->errorResponse('Error al descargar XML', $e);
