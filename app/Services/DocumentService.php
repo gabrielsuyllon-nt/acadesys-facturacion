@@ -280,10 +280,7 @@ class DocumentService
 
     protected function getOrCreateClient(array $clientData): Client
     {
-        return Client::firstOrCreate([
-            'tipo_documento' => $clientData['tipo_documento'],
-            'numero_documento' => $clientData['numero_documento'],
-        ], [
+        $datos = [
             'razon_social' => $clientData['razon_social'],
             'nombre_comercial' => $clientData['nombre_comercial'] ?? null,
             'direccion' => $clientData['direccion'] ?? null,
@@ -293,7 +290,16 @@ class DocumentService
             'departamento' => $clientData['departamento'] ?? null,
             'telefono' => $clientData['telefono'] ?? null,
             'email' => $clientData['email'] ?? null,
-        ]);
+        ];
+
+        // El comprobante debe llevar siempre los datos enviados. Antes se reutilizaba
+        // el cliente existente con el mismo documento y se ignoraba el nombre: sin
+        // documento (tipo 0, número genérico "00000000") todas las personas salían
+        // con el nombre del primer cliente registrado.
+        return Client::updateOrCreate([
+            'tipo_documento' => $clientData['tipo_documento'],
+            'numero_documento' => $clientData['numero_documento'],
+        ], $datos);
     }
 
     protected function calculateTotals(array &$detalles, array $globalData = []): array
